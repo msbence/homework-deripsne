@@ -22,6 +22,12 @@ resource "aws_instance" "grafana" {
   )
 }
 
+resource "aws_eip" "grafana" {
+  instance = aws_instance.grafana.id
+
+  tags = var.default_tags
+}
+
 resource "aws_ebs_volume" "grafana_zfs" {
   count = 2
 

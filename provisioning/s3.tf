@@ -4,6 +4,15 @@ resource "aws_s3_bucket" "backups_grafana" {
   tags = var.default_tags
 }
 
+# no use for this one, useful assuming a dedicated backup account 
+resource "aws_s3_bucket_ownership_controls" "backups_grafana" {
+  bucket = aws_s3_bucket.backups_grafana.id
+
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
 resource "aws_s3_bucket_versioning" "backups_grafana" {
   bucket = aws_s3_bucket.backups_grafana.id
 

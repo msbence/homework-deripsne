@@ -1,3 +1,8 @@
+# of course, this should normally be route53
+#data "digitalocean_domain" "mbraptor_tech" {
+#  name = "mbraptor.tech"
+#}
+
 data "aws_vpc" "default" {
   default = true
 }

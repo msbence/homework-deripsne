@@ -19,3 +19,9 @@ variable "default_tags" {
   type        = map(string)
   description = "Default tags to attach to each resource (if supported)"
 }
+
+variable "digitalocean_token" {
+  type        = string
+  sensitive   = true
+  description = "DigitalOcean token for DNS"
+}
