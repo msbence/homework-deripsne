@@ -1,0 +1,11 @@
+- name: Install base packages
+  ansible.builtin.import_tasks: packages.yaml
+
+- name: Configure ZFS
+  ansible.builtin.import_tasks: zfs.yaml
+
+- name: Install node exporter
+  ansible.builtin.import_tasks: node_exporter.yaml
+
+- name: Install alloy
+  ansible.builtin.import_tasks: alloy.yaml

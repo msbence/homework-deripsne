@@ -1,0 +1,14 @@
+- name: Configure EC2 instance
+  hosts: name_bencemadarasz_grafana
+  become: true
+  roles:
+    #- role: base
+    - role: grafana
+      vars:
+        grafana_server_url_scheme: "https"
+        grafana_server_url_fqdn: "grafana-homework.mbraptor.tech"
+        grafana_server_url_port: 443
+        grafana_admin_username: "{{ lookup('amazon.aws.aws_ssm', '/homework/grafana/admin-username', region='eu-west-1' ) }}"
+        grafana_admin_password: "{{ lookup('amazon.aws.aws_ssm', '/homework/grafana/admin-password', region='eu-west-1' ) }}"
+        grafana_backup_bucket: "bencemadarasz-backups-grafana"
+    #- role: mongodb

@@ -1,0 +1,88 @@
+- name: Create node_exporter user
+  user:
+    name: node_exporter
+    shell: /bin/false
+    create_home: False
+    comment: "Prometheus Node Exporter user"
+
+- name: Create node_exporter directory
+  file:
+    path: "/monitoring/node_exporter"
+    state: directory
+    owner: node_exporter
+    group: node_exporter
+    mode: 0775
+
+- name: Check if version file exists
+  stat:
+    path: "/monitoring/node_exporter/version"
+  register: node_exporter_version_file
+
+- name: Create initial version file
+  file:
+    path: "/monitoring/node_exporter/version"
+    state: touch
+    owner: node_exporter
+    group: node_exporter
+    mode: 0775
+  when: not node_exporter_version_file.stat.exists
+
+- name: Read local node_exporter version
+  slurp:
+    src: "/monitoring/node_exporter/version"
+  register: node_exporter_version_info
+
+- block:
+    - name: Get latest release
+      uri:
+        url: "https://api.github.com/repos/prometheus/node_exporter/releases/latest"
+        method: GET
+        return_content: true
+        status_code: 200
+        body_format: json
+      register: _latest_release
+      until: _latest_release.status == 200
+      retries: 5
+
+    - name: "Set node_exporter version to {{ _latest_release.json.tag_name[1:] }}"
+      set_fact:
+        node_exporter_version: "{{ _latest_release.json.tag_name[1:] }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Download latest node_exporter binary
+  when: node_exporter_version != node_exporter_version_info['content']
+  unarchive:
+    remote_src: yes
+    src: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    dest: "/monitoring/node_exporter/"
+    keep_newer: yes
+    extra_opts:
+    - --strip=1
+    - --no-anchored
+    - node_exporter
+  register: node_exporter_downloaded
+
+- name: Register version in file
+  copy:
+    content: "{{ node_exporter_version }}"
+    dest: /monitoring/node_exporter/version
+  when: node_exporter_downloaded.changed
+
+- name: Install node_exporter service
+  copy:
+    src: "node_exporter.service"
+    dest: "/etc/systemd/system/node_exporter.service"
+  register: node_exporter_service
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+  when: node_exporter_service.changed
+
+- name: (Re)start node_exporter service
+  service:
+    name: node_exporter
+    enabled: yes
+    state: restarted
+  when: node_exporter_downloaded.changed

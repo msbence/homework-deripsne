@@ -1,0 +1,96 @@
+- name: Create alloy user
+  user:
+    name: alloy
+    shell: /bin/false
+    create_home: False
+    comment: "alloy user"
+
+- name: Add alloy user to systemd-journal group
+  user:
+    name: alloy
+    groups: systemd-journal
+    append: yes
+
+- name: Create alloy directory
+  file:
+    path: "/monitoring/alloy"
+    state: directory
+    owner: alloy
+    group: alloy
+    mode: 0775
+
+- name: Check if version file exists
+  stat:
+    path: "/monitoring/alloy/version"
+  register: alloy_version_file
+
+- name: Create initial version file
+  file:
+    path: "/monitoring/alloy/version"
+    state: touch
+    owner: alloy
+    group: alloy
+    mode: 0775
+  when: not alloy_version_file.stat.exists
+
+- name: Read local alloy version
+  slurp:
+    src: "/monitoring/alloy/version"
+  register: alloy_version_info
+
+- block:
+    - name: Get latest release
+      uri:
+        url: "https://api.github.com/repos/grafana/alloy/releases/latest"
+        method: GET
+        return_content: true
+        status_code: 200
+        body_format: json
+      register: _latest_release
+      until: _latest_release.status == 200
+      retries: 5
+
+    - name: "Set alloy version to {{ _latest_release.json.tag_name[1:] }}"
+      set_fact:
+        alloy_version: "{{ _latest_release.json.tag_name[1:] }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Download latest alloy binary
+  when: alloy_version != alloy_version_info['content']
+  unarchive:
+    remote_src: yes
+    src: "https://github.com/grafana/alloy/releases/download/v{{ alloy_version }}/alloy-linux-amd64.zip"
+    dest: "/monitoring/alloy/"
+    keep_newer: yes
+  register: alloy_downloaded
+
+- name: Register version in file
+  copy:
+    content: "{{ alloy_version }}"
+    dest: /monitoring/alloy/version
+  when: alloy_downloaded.changed
+
+- name: Install alloy service
+  copy:
+    src: "alloy.service"
+    dest: "/etc/systemd/system/alloy.service"
+  register: alloy_service
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+  when: alloy_service.changed
+
+- name: Install alloy configuration
+  template:
+    src: "config.alloy.j2"
+    dest: "/monitoring/alloy/config.alloy"
+  register: alloy_config
+
+- name: (Re)start alloy service
+  service:
+    name: alloy
+    enabled: yes
+    state: restarted
+  when: alloy_downloaded.changed or alloy_service.changed or alloy_config.changed

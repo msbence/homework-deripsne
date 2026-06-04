@@ -1,0 +1,28 @@
+// {{ ansible_managed }}
+
+discovery.relabel "systemd_journal" {
+        targets = []
+
+        rule {
+                source_labels = ["__journal__systemd_unit"]
+                target_label  = "unit"
+        }
+}
+
+loki.source.journal "systemd_journal" {
+        max_age       = "12h0m0s"
+        path          = "/var/log/journal"
+        relabel_rules = discovery.relabel.systemd_journal.rules
+        forward_to    = [loki.write.default.receiver]
+        labels        = {
+                host = "{{ ec2_tags['Name'] }}",
+                job  = "systemd-journal",
+        }
+}
+
+loki.write "default" {
+        endpoint {
+                url = "http://{{ ansible_facts['default_ipv4']['address'] }}:3100/api/prom/push"
+        }
+        external_labels = {}
+}

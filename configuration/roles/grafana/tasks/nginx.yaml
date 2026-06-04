@@ -1,0 +1,36 @@
+- name: Install nginx and certbot
+  ansible.builtin.apt:
+    pkg:
+      - nginx
+      - certbot
+      - python3-certbot-nginx
+    state: present
+
+- name: Check if SSL certificate exists
+  ansible.builtin.stat:
+    path: /etc/letsencrypt/live/{{ grafana_server_url_fqdn }}/fullchain.pem
+  register: cert_file
+
+- name: Request SSL cert if missing 
+  ansible.builtin.command: >
+    certbot certonly
+    --nginx
+    -d {{ grafana_server_url_fqdn }}
+    --non-interactive
+    --agree-tos
+    --email acme@mbraptor.tech
+  when: not cert_file.stat.exists
+  notify: Reload nginx service
+
+- name: Install nginx config for grafana
+  ansible.builtin.template:
+    src: "grafana-vhost.j2"
+    dest: "/etc/nginx/sites-available/grafana"
+  notify: Reload nginx service
+
+- name: Enable the nginx site
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/grafana"
+    dest: "/etc/nginx/sites-enabled/grafana"
+    state: link
+  notify: Reload nginx service

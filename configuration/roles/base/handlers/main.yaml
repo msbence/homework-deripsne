@@ -1,0 +1,4 @@
+- name: Apply ARC limit NOW
+  become: true
+  ansible.builtin.shell: |
+    echo "{{ zfs_arc_max_bytes }}" > /sys/module/zfs/parameters/zfs_arc_max

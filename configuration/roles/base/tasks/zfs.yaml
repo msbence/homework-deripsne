@@ -1,0 +1,29 @@
+# https://docs.ansible.com/projects/ansible/latest/collections/community/general/zpool_module.html
+
+- name: Install ZFS packages
+  ansible.builtin.apt:
+    name: zfsutils-linux
+    state: present
+
+# https://pve.proxmox.com/wiki/ZFS_on_Linux#_zfs_administration
+- name: Limit ARC due to low RAM
+  ansible.builtin.lineinfile:
+    path: /etc/modprobe.d/zfs.conf
+    regexp: '^options zfs zfs_arc_max='
+    line: "options zfs zfs_arc_max={{ zfs_arc_max_bytes }}"
+    create: true
+  notify: Apply ARC limit NOW
+
+- name: Create mirrored ZFS pool
+  community.general.zpool:
+    name: tank-mon
+    pool_properties:
+      ashift: 12 # balanced choice for SSDs
+    filesystem_properties:
+      compression: lz4 # beneficial if holds monitoring data
+      # not enabling dedup due to low RAM
+    vdevs:
+      - type: mirror
+        disks: # super not flexible, but good enough for now
+          - /dev/nvme1n1
+          - /dev/nvme2n1

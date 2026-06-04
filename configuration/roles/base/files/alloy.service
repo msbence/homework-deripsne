@@ -1,0 +1,19 @@
+[Unit]
+Description=Grafana Alloy
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=alloy
+Group=alloy
+Environment=HOSTNAME=%H
+Type=simple
+Restart=on-failure
+WorkingDirectory=/monitoring/alloy
+ExecStart=/monitoring/alloy/alloy-linux-amd64 run --storage.path=/monitoring/alloy /monitoring/alloy/config.alloy
+ExecReload=/usr/bin/env kill -HUP $MAINPID
+TimeoutStopSec=20s
+SendSIGKILL=no
+
+[Install]
+WantedBy=multi-user.target

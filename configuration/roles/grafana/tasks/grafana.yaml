@@ -1,0 +1,41 @@
+# - name: Install podman
+#   ansible.builtin.apt:
+#     name: podman
+#     state: present
+
+# - name: Create grafana data directory
+#   file:
+#     path: "/monitoring/grafana"
+#     state: directory
+#     mode: 0755
+
+# - name: Create grafana container
+#   containers.podman.podman_container:
+#     name: grafana
+#     image: docker.io/grafana/grafana-oss:13.0.2 # renovatebot or nv-checker to keep this up-to-date
+#     restart_policy: unless-stopped
+#     ports:
+#       - "3000:3000"
+#     user: ":"
+#     volume:
+#       - /monitoring/grafana:/var/lib/grafana:Z
+#     env:
+#       GF_SERVER_ROOT_URL: "{{ grafana_server_url_scheme }}://{{ grafana_server_url_fqdn }}:{{ grafana_server_url_port }}"
+#       GF_SECURITY_ADMIN_USER: "{{ grafana_admin_username }}"
+#       GF_SECURITY_ADMIN_PASSWORD: "{{ grafana_admin_password }}"
+
+### BACKUP
+# https://grafana.com/docs/grafana/latest/administration/back-up-grafana/
+
+- name: Put backup script on host
+  ansible.builtin.template:
+    src: "backup-grafana.sh.j2"
+    dest: "/monitoring/backup-grafana.sh"
+    mode: 0755
+
+- name: Deploy grafana backup cronjob
+  ansible.builtin.cron:
+    name: "backup grafana"
+    minute: "0"
+    hour: "19" # not super late, but we shutdown at 20
+    job: "/monitoring/backup-grafana.sh"
