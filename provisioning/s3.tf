@@ -1,3 +1,9 @@
+resource "aws_s3_bucket" "ssm_store" {
+  bucket = "bencemadarasz-ssm-store"
+
+  tags = var.default_tags
+}
+
 resource "aws_s3_bucket" "backups_grafana" {
   bucket = "bencemadarasz-backups-grafana"
 

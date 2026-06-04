@@ -1,0 +1,12 @@
+plugin: 'amazon.aws.aws_ec2'
+regions:
+  - eu-west-1
+filters:
+  tag:Name: bencemadarasz-grafana
+hostnames:
+  - instance-id
+compose:
+  ansible_host: instance_id
+  ansible_connection: "'aws_ssm'"
+  ansible_aws_ssm_bucket_name: "'bencemadarasz-ssm-store'"
+  ansible_aws_ssm_region: "'eu-west-1'"
