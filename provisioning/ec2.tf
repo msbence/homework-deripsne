@@ -1,6 +1,6 @@
 resource "aws_instance" "grafana" {
-  instance_type     = "t3.micro"                   # TODO: change when switching accounts
-  ami               = data.aws_ami.ubuntu_noble.id # TODO: make sure that an AMI update won't re-create the resource
+  instance_type     = "t3a.small"
+  ami               = data.aws_ami.ubuntu_noble.id
   availability_zone = "${var.aws_region}${var.aws_az}"
 
   iam_instance_profile = aws_iam_instance_profile.grafana.name
@@ -12,6 +12,14 @@ resource "aws_instance" "grafana" {
   root_block_device {
     volume_size = 10
     encrypted   = true
+  }
+
+  lifecycle {
+    ignore_changes = [
+      ami # this instance is stateful, do not recreate on AMI change
+    ]
+
+    prevent_destroy = false # on prod this is a good idea to be set to true, but not doing that here
   }
 
   tags = merge(

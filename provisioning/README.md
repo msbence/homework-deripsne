@@ -85,7 +85,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
-| <a name="input_aws_az"></a> [aws\_az](#input\_aws\_az) | AWS availability region to use | `string` | `"b"` | no |
+| <a name="input_aws_az"></a> [aws\_az](#input\_aws\_az) | AWS availability region to use | `string` | `"a"` | no |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region to use | `string` | `"eu-west-1"` | no |
 | <a name="input_default_tags"></a> [default\_tags](#input\_default\_tags) | Default tags to attach to each resource (if supported) | `map(string)` | n/a | yes |
 | <a name="input_digitalocean_token"></a> [digitalocean\_token](#input\_digitalocean\_token) | DigitalOcean token for DNS | `string` | n/a | yes |

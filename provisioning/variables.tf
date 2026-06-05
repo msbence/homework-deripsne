@@ -7,11 +7,11 @@ variable "aws_region" {
 variable "aws_az" {
   type        = string
   description = "AWS availability region to use"
-  default     = "b"
+  default     = "a"
 
   validation {
     condition     = contains(["a", "b", "c"], var.aws_az)
-    error_message = "Allowed values for aws_az are a, b, or c."
+    error_message = "Allowed values for aws_az are a, b, or c!"
   }
 }
 
