@@ -11,5 +11,5 @@ hostnames:
 compose:
   ansible_host: instance_id
   ansible_connection: "'aws_ssm'" # using SSM. This is painfully slow, use a bastion host / CI worker in prod.
-  ansible_aws_ssm_bucket_name: "'bencemadarasz-ssm-store'"
+  ansible_aws_ssm_bucket_name: "'bencemadarasz-hw-ssm-store'"
   ansible_aws_ssm_region: "'eu-west-1'"

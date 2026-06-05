@@ -12,7 +12,7 @@
         grafana_server_url_port: 443
         grafana_admin_username: "{{ lookup('amazon.aws.aws_ssm', '/homework/grafana/admin-username', region='eu-west-1' ) }}"
         grafana_admin_password: "{{ lookup('amazon.aws.aws_ssm', '/homework/grafana/admin-password', region='eu-west-1' ) }}"
-        grafana_backup_bucket: "bencemadarasz-backups-grafana"
+        grafana_backup_bucket: "bencemadarasz-hw-backups-grafana"
     - role: mongodb
       vars:
         mongodb_admin_username: "{{ lookup('amazon.aws.aws_ssm', '/homework/mongodb/admin-username', region='eu-west-1' ) }}"

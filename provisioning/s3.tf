@@ -1,11 +1,11 @@
 resource "aws_s3_bucket" "ssm_store" {
-  bucket = "bencemadarasz-ssm-store"
+  bucket = "bencemadarasz-hw-ssm-store"
 
   tags = var.default_tags
 }
 
 resource "aws_s3_bucket" "backups_grafana" {
-  bucket = "bencemadarasz-backups-grafana"
+  bucket = "bencemadarasz-hw-backups-grafana"
 
   tags = var.default_tags
 }
@@ -36,6 +36,10 @@ resource "aws_s3_bucket_object_lock_configuration" "backups_grafana" {
       days = 3
     }
   }
+
+  depends_on = [
+    aws_s3_bucket_versioning.backups_grafana
+  ]
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "backups_grafana" {

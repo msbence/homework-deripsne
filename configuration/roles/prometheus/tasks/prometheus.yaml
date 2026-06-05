@@ -11,9 +11,9 @@
 
 - name: Install prometheus config
   ansible.builtin.template:
-    src: "prometheus.yaml"
+    src: "prometheus.yaml.j2"
     dest: "/monitoring/prometheus/prometheus.yml"
-    mode: "644"
+    mode: "0644"
 
 - name: Create prometheus container
   containers.podman.podman_container:
