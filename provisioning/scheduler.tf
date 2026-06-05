@@ -1,3 +1,4 @@
+# https://docs.aws.amazon.com/solutions/latest/instance-scheduler-on-aws/solution-overview.html
 #resource "aws_cloudformation_stack" "instance_scheduler" {
 #  name         = "aws_instance_scheduler"
 #  template_url = "https://s3.amazonaws.com/solutions-reference/instance-scheduler-on-aws/latest/instance-scheduler-on-aws.template"
@@ -21,7 +22,8 @@ resource "aws_scheduler_schedule" "start_grafana" {
     mode = "OFF"
   }
 
-  # AWS Docs: "You can't use * in both the Day-of-month and Day-of-week fields. If you use it in one, you must use ? in the other." -> interesting...
+  # AWS Docs: "You can't use * in both the Day-of-month and Day-of-week fields.
+  # If you use it in one, you must use ? in the other." -> interesting...
   schedule_expression          = "cron(0 6 * * ? *)" # start at 06:00 UTC
   schedule_expression_timezone = "UTC"               # default, but let's be explicit
 

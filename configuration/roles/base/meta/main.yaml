@@ -1,0 +1,6 @@
+galaxy_info:
+  author: Bence Madarasz
+  description: Role to configure basic components on a host
+  license: MIT
+  min_ansible_version: "14"
+dependencies: []
