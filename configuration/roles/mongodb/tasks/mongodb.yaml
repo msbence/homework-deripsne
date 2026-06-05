@@ -23,6 +23,7 @@
       MONGO_INITDB_ROOT_USERNAME: "{{ mongodb_admin_username }}"
       MONGO_INITDB_ROOT_PASSWORD: "{{ mongodb_admin_password }}"
 
+# We need all this to have mongosh on the host, so that we can verify the connection
 - name: Fetch mongodb GPG key
   ansible.builtin.get_url:
     url: https://www.mongodb.org/static/pgp/server-8.0.asc
