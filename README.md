@@ -38,6 +38,16 @@ My task description had a "deliverables" section, so I've decided to move those 
 
 It mainly contains the [detailed documentation](/deliverables/documentation/README.md) on what I did.
 
-## Note
+## Notes
+
+### LLM usage
+
+LLMs are helpful tools, and I sometimes use them to increase efficiency (or just to tinker with them: I have an old NVIDIA Tesla in my homelab), but I also like to understand what I do and why I do it... I also believe that just from generated "AI" code you would not see my coding style, the way I think, etc... Therefore:
+
+**This repository DOES NOT contain any LLM-generated code, scripts, or files. LLMs were, however, used for: grammar checks and troubleshooting.**
+
+On a related note: some ideas and code were borrowed from my homelab IaC repo, but those were also handwritten.
+
+### Git history
 
 The way GitHub visualizes my commit history is NOT accurate. When moving from my dekstop to my notebook I forgot to set up GPG commit signing and therefore had to amend and sign them retrospectievly. It looks correct on GitLab and `git` itself, but not on GitHub. If you are interested in the exact development timeline then clone this repo and use `git log`.
