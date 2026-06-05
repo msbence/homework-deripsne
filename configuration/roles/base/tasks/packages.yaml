@@ -1,20 +1,20 @@
 - name: Run apt update first
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
 
 - name: Install common packages
   ansible.builtin.apt:
     pkg:
-    - molly-guard
-    - tmux
-    - htop
-    - net-tools
-    - dnsutils
+      - molly-guard
+      - tmux
+      - htop
+      - net-tools
+      - dnsutils
 
 - name: Run apt autoclean to cleanup
   ansible.builtin.apt:
-    autoclean: yes
+    autoclean: true
 
 - name: Run apt autoremove to cleanup
   ansible.builtin.apt:
-    autoremove: yes
+    autoremove: true

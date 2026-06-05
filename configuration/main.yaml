@@ -2,7 +2,7 @@
   hosts: name_bencemadarasz_grafana
   become: true
   roles:
-    #- role: base
+    - role: base
     - role: grafana
       vars:
         grafana_server_url_scheme: "https"
@@ -11,4 +11,7 @@
         grafana_admin_username: "{{ lookup('amazon.aws.aws_ssm', '/homework/grafana/admin-username', region='eu-west-1' ) }}"
         grafana_admin_password: "{{ lookup('amazon.aws.aws_ssm', '/homework/grafana/admin-password', region='eu-west-1' ) }}"
         grafana_backup_bucket: "bencemadarasz-backups-grafana"
-    #- role: mongodb
+    - role: mongodb
+      vars:
+        mongodb_admin_username: "{{ lookup('amazon.aws.aws_ssm', '/homework/mongodb/admin-username', region='eu-west-1' ) }}"
+        mongodb_admin_password: "{{ lookup('amazon.aws.aws_ssm', '/homework/mongodb/admin-password', region='eu-west-1' ) }}"

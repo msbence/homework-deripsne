@@ -7,6 +7,8 @@ SOURCE_DIR="/monitoring/grafana"
 
 cd /tmp
 tar -czf "$TARGET_FILE" -C "$SOURCE_DIR" grafana.db plugins
+
+# https://github.com/s3tools/s3cmd/issues/263
 md5_hash=$(/usr/bin/openssl dgst -md5 -binary "$TARGET_FILE" | base64)
 
 /usr/bin/s3cmd put --add-header="Content-MD5: $md5_hash" --disable-multipart \

@@ -1,0 +1,45 @@
+- name: Install podman
+  ansible.builtin.apt:
+    name: podman
+    state: present
+
+- name: Create mongodb data directory
+  ansible.builtin.file:
+    path: "/mongodb"
+    state: directory
+    mode: "0755"
+
+- name: Create mongodb container
+  containers.podman.podman_container:
+    name: mongodb
+    image: docker.io/mongo:8.3.2 # renovatebot or nv-checker to keep this up-to-date
+    restart_policy: always
+    ports:
+      - "27017:27017"
+    user: ":"
+    volume:
+      - /mongodb:/data/db:Z
+    env:
+      MONGO_INITDB_ROOT_USERNAME: "{{ mongodb_admin_username }}"
+      MONGO_INITDB_ROOT_PASSWORD: "{{ mongodb_admin_password }}"
+
+- name: Fetch mongodb GPG key
+  ansible.builtin.get_url:
+    url: https://www.mongodb.org/static/pgp/server-8.0.asc
+    dest: /tmp/mongodb-server-8.0.asc
+    mode: '0644'
+
+- name: Dearmor and install mongodb GPG key
+  ansible.builtin.command:
+    cmd: gpg --dearmor -o /usr/share/keyrings/mongodb-server-8.0.gpg /tmp/mongodb-server-8.0.asc
+    creates: /usr/share/keyrings/mongodb-server-8.0.gpg
+
+- name: Add mongodb repository
+  ansible.builtin.apt_repository:
+    repo: "deb [ arch=amd64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse"
+    filename: mongodb
+    update_cache: true
+
+- name: Install mongosh package
+  ansible.builtin.apt:
+    name: mongodb-mongosh

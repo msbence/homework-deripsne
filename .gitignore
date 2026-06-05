@@ -5,6 +5,7 @@ secrets.auto.tfvars
 
 ### Ansible ###
 *.retry
+.ansible/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

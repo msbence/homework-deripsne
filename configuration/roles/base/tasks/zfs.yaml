@@ -10,8 +10,9 @@
   ansible.builtin.lineinfile:
     path: /etc/modprobe.d/zfs.conf
     regexp: '^options zfs zfs_arc_max='
-    line: "options zfs zfs_arc_max={{ zfs_arc_max_bytes }}"
+    line: "options zfs zfs_arc_max={{ base_zfs_arc_max_bytes }}"
     create: true
+    mode: "0755"
   notify: Apply ARC limit NOW
 
 - name: Create mirrored ZFS pool

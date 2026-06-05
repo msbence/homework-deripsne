@@ -4,8 +4,8 @@ regions:
 filters:
   tag:Name: bencemadarasz-grafana
 keyed_groups:
-- key: ec2_tags['Name']
-  prefix: name
+  - key: ec2_tags['Name']
+    prefix: name
 hostnames:
   - instance-id
 compose:

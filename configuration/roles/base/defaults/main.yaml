@@ -1,2 +1,2 @@
 # 512MB max ARC
-zfs_arc_max_bytes: "{{ (0.5 * 1024 * 1024 * 1024) | int }}"
+base_zfs_arc_max_bytes: "{{ (0.5 * 1024 * 1024 * 1024) | int }}"

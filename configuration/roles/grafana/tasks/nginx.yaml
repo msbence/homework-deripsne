@@ -9,9 +9,10 @@
 - name: Check if SSL certificate exists
   ansible.builtin.stat:
     path: /etc/letsencrypt/live/{{ grafana_server_url_fqdn }}/fullchain.pem
-  register: cert_file
+  register: grafana_cert_file
 
-- name: Request SSL cert if missing 
+# https://github.com/certbot/certbot/issues/4090
+- name: Request SSL cert if missing  # noqa no-changed-when
   ansible.builtin.command: >
     certbot certonly
     --nginx
@@ -19,13 +20,14 @@
     --non-interactive
     --agree-tos
     --email acme@mbraptor.tech
-  when: not cert_file.stat.exists
+  when: not grafana_cert_file.stat.exists
   notify: Reload nginx service
 
 - name: Install nginx config for grafana
   ansible.builtin.template:
     src: "grafana-vhost.j2"
     dest: "/etc/nginx/sites-available/grafana"
+    mode: "0755"
   notify: Reload nginx service
 
 - name: Enable the nginx site
