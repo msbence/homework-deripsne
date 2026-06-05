@@ -21,7 +21,7 @@ _As in: what the role does._
   - Mounting the data directory (a volume would be also an option, but this can support multiple ways of doing backups)
     - `user: ":"` (required to make sure the data can be written by the container user)
     - `volume: /mongodb:/data/db:Z`
-  - Sets the admin credentials via environment variables (which is read from the SSM Parameter Store (SecureString))
+  - Sets the admin credentials via environment variables (which are read from the SSM Parameter Store (SecureString))
     - `MONGO_INITDB_ROOT_USERNAME: "{{ mongodb_admin_username }}"`
     - `MONGO_INITDB_ROOT_PASSWORD: "{{ mongodb_admin_password }}"`
 - While not required on the server, it also installs the `mongosh` client so that we can verify that the instance is reachable

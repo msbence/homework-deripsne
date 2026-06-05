@@ -4,7 +4,7 @@
 > TL;DR: The detailed documentation is [here](/deliverables/documentation/README.md).
 
 My task was to deploy a small, production-like Grafana environment on AWS, with a focus on availability and redundancy.  
-I had to follow specific requirements, which resulted in some strange solutions. As I was provided with an AWS account paid by the company, I tried to be ultra cost-aware (no LB, no multi-AZ, ...). This took a great toll on the HA-setup, but I will be mentioning all the trade-offs I made due to this contraint.
+I had to follow specific requirements, which resulted in some strange solutions. As I was provided with an AWS account paid by the company, I tried to be ultra cost-aware (no LB, no multi-AZ, ...). This took a great toll on the HA-setup, but I will be mentioning all the trade-offs I made due to this constraint.
 
 ![grafana](/.assets/grafana.png)
 
@@ -57,4 +57,4 @@ On a related note: some ideas and code were borrowed from my homelab IaC repo, b
 
 ### Git history
 
-The way GitHub visualizes my commit history is NOT accurate. When moving from my dekstop to my notebook I forgot to set up GPG commit signing and therefore had to amend and sign them retrospectievly. It looks correct on GitLab and `git` itself, but not on GitHub. If you are interested in the exact development timeline then clone this repo and use `git log`.
+The way GitHub visualizes my commit history is NOT accurate. When moving from my desktop to my notebook I forgot to set up GPG commit signing and therefore had to amend and sign them retrospectively. It looks correct on GitLab and `git` itself, but not on GitHub. If you are interested in the exact development timeline then clone this repo and use `git log`.

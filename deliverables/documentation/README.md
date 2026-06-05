@@ -1,8 +1,8 @@
 # Documentation
 
-I made several trade-offs during the implementation: most of them was to save costs, few of them were about complexity.
+I made several trade-offs during the implementation: most of them were to save costs, and a few of them were about complexity.
 
-In the sections below I tried to summarize what I did, how the architecture looks like, and describe how and why the solution works - albeit not being production-grade.
+In the sections below I tried to summarize what I did, what the architecture looks like, and describe how and why the solution works - albeit not being production-grade.
 
 ## Architecture overview
 
@@ -18,7 +18,7 @@ I wanted to save costs by not deploying a NAT Gateway, or a Load Balancer. I mad
 
 ## Grafana
 
-The latest (at the time of writing) Grafana OSS (formerly CE) is deployed on the EC2 host. I choose to leverage Podman, as having a containerized approach from the beginning introduces means to make it portable (like move it to EKS, Fargate, ...), it's also better for security as it provides some level of isolation (not on the kernel-level though), and last but not least: it means less Ansible tasks.
+The latest (at the time of writing) Grafana OSS (formerly CE) is deployed on the EC2 host. I chose to leverage Podman, as having a containerized approach from the beginning introduces means to make it portable (like move it to EKS, Fargate, ...), it's also better for security as it provides some level of isolation (not on the kernel-level though), and last but not least: it means less Ansible tasks.
 
 While some parts of the deployment are in code, I've decided to create dashboards by hand. The instance itself is being backed up, so there are some means to restore those as well.
 
@@ -26,14 +26,14 @@ A user may use this to track the status of the EC2 instance itself, view logs, a
 
 ## ZFS
 
-I provisioned two additional EBS volumes for the EC2 instance, which shows up as NVMe drives on the host. Configuring the mirror itself is done by Ansible, with some additional tweaks from my side:
+I provisioned two additional EBS volumes for the EC2 instance, which show up as NVMe drives on the host. Configuring the mirror itself is done by Ansible, with some additional tweaks from my side:
 
 - ARC is limited to 512M as we are low on RAM
 - `ashift` is set to 12 which is a balanced value for SSDs
 - deduplication is NOT enabled, to save memory
 - compression is enabled, to still have some space-saving measures in place
 
-I choose not to encrypt the pool, since the underlying EBS volumes have encryption enabled already.
+I chose not to encrypt the pool, since the underlying EBS volumes have encryption enabled already.
 
 ## Backup
 
@@ -41,7 +41,7 @@ Backups are implemented via a cronjob set on the EC2 host (installed via Ansible
 
 Backups are made by compressing the `grafana.db` and the `plugins` directory into an archive (filename contains the date), and that being sent to an S3 bucket.
 
-Just copying the SQlite database of a running instance is a bold move. On production I would configre Grafana to use Postgres and use a dedicated tool to take backups. Or just go RDS.
+Just copying the SQlite database of a running instance is a bold move. On production I would configure Grafana to use Postgres and use a dedicated tool to take backups. Or just go RDS.
 
 The backup bucket has versioning, object lock, retention (transition and expiration), and also ownership controls configured. The latter is not necessary right now, but I've assumed that later it would be moved to a dedicated AWS account. The instance-attached IAM role only allows Put and Get operations.
 
@@ -63,7 +63,7 @@ All you have to do is redeploy the instance from code, then stop the `grafana` c
 The EC2 instance is being shut down at 20:00 UTC, and started up at 06:00 UTC. This is to save costs.  
 My implementation was done with EventBridge schedules, and it does the job. However, on a bigger scale, going with the [AWS Instance Scheduler](https://docs.aws.amazon.com/solutions/latest/instance-scheduler-on-aws/solution-overview.html) CloudFormation stack would make more sense.
 
-Note: This scheduling is the reason why I had to use an Elastic IP. Normally instances are getting a different public IP when being stopped-started, but I needed to have DNS name resolution using a non-amazonaws domain, therefore the best approach that I found was to use the Elastic IP (and pay a tiny amount of money when the instance is stopped).
+Note: This scheduling is the reason why I had to use an Elastic IP. Normally instances get a different public IP when being stopped-started, but I needed to have DNS name resolution using a non-amazonaws domain, therefore the best approach that I found was to use the Elastic IP (and pay a tiny amount of money when the instance is stopped).
 
 ## Security controls
 
@@ -76,12 +76,12 @@ The EC2 instance has several Security Groups attached to it, to make the network
 
 ### EC2 Instance
 
-Connections to the instance is not possible over SSH. Admins must use SSM. This solution is quite powerful as it provides audit logs (CloudTrail), and also considers IAM roles.
+Connections to the instance are not possible over SSH. Admins must use SSM. This solution is quite powerful as it provides audit logs (CloudTrail), and also considers IAM roles.
 
 ### Backup bucket
 
-Deleting from the bucket is not possible. Overwriting the files are also not possible due to versioning.
-The bucket also implements object locking, which is a standard when it comes to backup. I choose GOVERNANCE mode on purpose, so that the bucket can be cleaned up by the root account; on prod I would go COMPLIANCE.
+Deleting from the bucket is not possible. Overwriting files is also not possible due to versioning.
+The bucket also implements object locking, which is a standard when it comes to backup. I chose GOVERNANCE mode on purpose, so that the bucket can be cleaned up by the root account; on prod I would go COMPLIANCE.
 
 ### Repository
 
@@ -94,7 +94,7 @@ The repo contains no secrets at all. It reads everything from the Parameter Stor
 3. A simpler WAF put in front of Grafana would also increase security.
 4. The current backup of Grafana is suboptimal (just like the DB setup itself): move to postgres and use a native solution (worst case a `pgdump`).
 5. While this needs support from the consumer as well, going with Secrets Manager instead of the Parameter Store would provide more flexibility (cross-account support, rotation).
-6. While SSM is good for security, it also results in a horrible Ansible performance... I would either setup a dedicated and hardened bastion jumphost, or even better: deploy CI runners within the network and implement CI/CD for Ansible.
+6. While SSM is good for security, it also results in a horrible Ansible performance... I would either set up a dedicated and hardened bastion jumphost, or even better: deploy CI runners within the network and implement CI/CD for Ansible.
 7. I would also implement CI/CD for Terraform (instead of local applies), with Atlantis for example as a tool.
 8. Most importantly: to cover availability and redundancy, I would move the whole Grafana container to Fargate (or ECS-EC2), and get rid of this single-AZ instance.
 9. Several applications were deployed as containers. By setting up Renovatebot we would have the means to get notified (and depending on the configuration also auto-open MRs) in case a new version is released from a tool we run.
