@@ -1,0 +1,33 @@
+- name: Install podman
+  ansible.builtin.apt:
+    name: podman
+    state: present
+
+- name: Create prometheus data directory
+  ansible.builtin.file:
+    path: "/monitoring/prometheus"
+    state: directory
+    mode: "0755"
+
+- name: Install prometheus config
+  ansible.builtin.template:
+    src: "prometheus.yaml"
+    dest: "/monitoring/prometheus/prometheus.yml"
+    mode: "644"
+
+- name: Create prometheus container
+  containers.podman.podman_container:
+    name: prometheus
+    image: docker.io/prom/prometheus:v3.12.0 # renovatebot or nv-checker to keep this up-to-date
+    restart_policy: always
+    ports:
+      - "9090:9090"
+    user: ":"
+    volume:
+      - /monitoring/prometheus:/etc/prometheus:Z
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/etc/prometheus/data"
+      - "--storage.tsdb.retention.time=7d"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"

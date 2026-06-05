@@ -48,6 +48,9 @@ Description: Role to configure grafana (and nginx)
 | Install podman | ansible.builtin.apt | False |
 | Create grafana data directory | ansible.builtin.file | False |
 | Create grafana container | containers.podman.podman_container | False |
+| Give 5 seconds to Grafana to boot | ansible.builtin.wait_for | False |
+| Configure datasource for Prometheus | community.grafana.grafana_datasource | False |
+| Configure datasource for Loki | community.grafana.grafana_datasource | False |
 | Put backup script on host | ansible.builtin.template | False |
 | Deploy grafana backup cronjob | ansible.builtin.cron | False |
 

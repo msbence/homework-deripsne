@@ -3,6 +3,8 @@
   become: true
   roles:
     - role: base
+    - role: prometheus
+    - role: loki
     - role: grafana
       vars:
         grafana_server_url_scheme: "https"

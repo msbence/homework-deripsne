@@ -24,6 +24,31 @@
       GF_SECURITY_ADMIN_USER: "{{ grafana_admin_username }}"
       GF_SECURITY_ADMIN_PASSWORD: "{{ grafana_admin_password }}"
 
+- name: Give 5 seconds to Grafana to boot
+  ansible.builtin.wait_for:
+    timeout: 5
+  delegate_to: localhost
+
+- name: Configure datasource for Prometheus
+  community.grafana.grafana_datasource:
+    url: http://localhost:3000
+    url_username: "{{ grafana_admin_username }}"
+    url_password: "{{ grafana_admin_password }}"
+    name: prometheus
+    ds_type: prometheus
+    ds_url: "http://{{ ansible_facts['default_ipv4']['address'] }}:9090"
+    additional_json_data:
+      timeInterval: 30s
+
+- name: Configure datasource for Loki
+  community.grafana.grafana_datasource:
+    url: http://localhost:3000
+    url_username: "{{ grafana_admin_username }}"
+    url_password: "{{ grafana_admin_password }}"
+    name: loki
+    ds_type: loki
+    ds_url: "http://{{ ansible_facts['default_ipv4']['address'] }}:3100"
+
 ### BACKUP
 # https://grafana.com/docs/grafana/latest/administration/back-up-grafana/
 

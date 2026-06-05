@@ -1,0 +1,17 @@
+- name: Install podman
+  ansible.builtin.apt:
+    name: podman
+    state: present
+
+- name: Create mongodb_exporter container
+  containers.podman.podman_container:
+    name: mongodb_exporter
+    image: docker.io/percona/mongodb_exporter:0.51.0 # renovatebot or nv-checker to keep this up-to-date
+    restart_policy: always
+    ports:
+      - "9216:9216"
+    command:
+      - "--mongodb.uri=mongodb://{{ ansible_facts['default_ipv4']['address'] }}:27017"
+    env:
+      MONGODB_USER: "{{ mongodb_admin_username }}"
+      MONGODB_PASSWORD: "{{ mongodb_admin_password }}"

@@ -10,7 +10,8 @@ I had to follow specific requirements, which resulted in some strange solutions.
 
 - EC2 instance with on/off schedule and extra ZFS storage (mirrored)
 - Grafana 13, exposed over HTTPS, backed up
-- MongoDB 8
+- MongoDB 8 with MongoDB exporter
+- Monitoring and log collection
 - Full IaC with Terraform and Ansible (except the Grafana dashboards)
 - Tries to keep security a priority (again: cost was a factor)
 - Formatting, linting, auto-documenting
@@ -39,6 +40,10 @@ My task description had a "deliverables" section, so I've decided to move those 
 It mainly contains the [detailed documentation](/deliverables/documentation/README.md) on what I did.
 
 ## Notes
+
+### State bucket
+
+I have to execute 2 awscli commands to create the state bucket for Terraform. While this works, I had the idea to try out the Python AWS CDK and utilize it for this purpose. Due to time constraints, I didn't do it. :(
 
 ### LLM usage
 

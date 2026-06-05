@@ -1,0 +1,29 @@
+- name: Install podman
+  ansible.builtin.apt:
+    name: podman
+    state: present
+
+- name: Create loki data directory
+  ansible.builtin.file:
+    path: "/monitoring/loki"
+    state: directory
+    mode: "0755"
+
+- name: Install loki config
+  ansible.builtin.copy:
+    src: "loki-config.yaml"
+    dest: "/monitoring/loki/loki-config.yaml"
+    mode: "0644"
+
+- name: Create loki container
+  containers.podman.podman_container:
+    name: loki
+    image: docker.io/grafana/loki:3.7.2 # renovatebot or nv-checker to keep this up-to-date
+    restart_policy: always
+    ports:
+      - "3100:3100"
+    user: ":"
+    volume:
+      - /monitoring/loki:/etc/loki:Z
+    command:
+      - "--config.file=/etc/loki/loki-config.yaml"

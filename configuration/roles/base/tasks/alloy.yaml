@@ -74,11 +74,20 @@
     mode: "0775"
   when: base_alloy_downloaded.changed
 
+- name: Make the alloy binary executable  # noqa no-handler
+  ansible.builtin.file:
+    path: "/monitoring/alloy/alloy-linux-amd64"
+    state: touch
+    owner: alloy
+    group: alloy
+    mode: "0775"
+  when: base_alloy_downloaded.changed
+
 - name: Install alloy service
   ansible.builtin.copy:
     src: "alloy.service"
     dest: "/etc/systemd/system/alloy.service"
-    mode: "0775"
+    mode: "664"
   notify: Restart alloy service
 
 - name: Install alloy configuration

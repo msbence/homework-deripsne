@@ -95,4 +95,7 @@ The repo contains no secrets at all. It reads everything from the Parameter Stor
 4. The current backup of Grafana is suboptimal (just like the DB setup itself): move to postgres and use a native solution (worst case a `pgdump`).
 5. While this needs support from the consumer as well, going with Secrets Manager instead of the Parameter Store would provide more flexibility (cross-account support, rotation).
 6. While SSM is good for security, it also results in a horrible Ansible performance... I would either setup a dedicated and hardened bastion jumphost, or even better: deploy CI runners within the network and implement CI/CD for Ansible.
-7. Most importantly: to cover availability and redundancy, I would move the whole Grafana container to Fargate (or ECS-EC2), and get rid of this single-AZ instance.
+7. I would also implement CI/CD for Terraform (instead of local applies), with Atlantis for example as a tool.
+8. Most importantly: to cover availability and redundancy, I would move the whole Grafana container to Fargate (or ECS-EC2), and get rid of this single-AZ instance.
+9. Several applications were deployed as containers. By setting up Renovatebot we would have the means to get notified (and depending on the configuration also auto-open MRs) in case a new version is released from a tool we run.
+10. I wrote everything Terraform from scratch to show low-level tool usage. Normally I would suggest to use [terraform-aws-modules](https://github.com/terraform-aws-modules) as they are more robust, and can save time.

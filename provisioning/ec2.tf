@@ -1,5 +1,5 @@
 resource "aws_instance" "grafana" {
-  instance_type     = "t3a.small"
+  instance_type     = "t3.micro"
   ami               = data.aws_ami.ubuntu_noble.id
   availability_zone = "${var.aws_region}${var.aws_az}"
 

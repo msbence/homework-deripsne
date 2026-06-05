@@ -40,7 +40,7 @@
       ansible.builtin.uri:
         url: "https://api.github.com/repos/prometheus/node_exporter/releases/latest"
         method: GET
-        return_content: truebase_
+        return_content: true
         status_code: 200
         body_format: json
       register: base_node_exporter_latest_release
@@ -69,6 +69,15 @@
   ansible.builtin.copy:
     content: "{{ base_node_exporter_version }}"
     dest: /monitoring/node_exporter/version
+    mode: "0775"
+  when: base_node_exporter_downloaded.changed
+
+- name: Make the node_exporter binary executable  # noqa no-handler
+  ansible.builtin.file:
+    path: "/monitoring/node_exporter/node_exporter"
+    state: touch
+    owner: node_exporter
+    group: node_exporter
     mode: "0775"
   when: base_node_exporter_downloaded.changed
 

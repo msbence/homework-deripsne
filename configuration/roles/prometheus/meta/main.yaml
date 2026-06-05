@@ -1,0 +1,6 @@
+galaxy_info:
+  author: Bence Madarasz
+  description: Role to deploy prometheus
+  license: MIT
+  min_ansible_version: "14"
+dependencies: []

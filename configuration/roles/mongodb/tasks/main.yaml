@@ -1,2 +1,5 @@
 - name: Deploy MongoDB
   ansible.builtin.import_tasks: mongodb.yaml
+
+- name: Deploy MongoDB Exporter
+  ansible.builtin.import_tasks: exporter.yaml

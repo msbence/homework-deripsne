@@ -37,11 +37,19 @@ Description: Role to configure a mongodb container
 ### Tasks
 
 
+#### File: tasks/exporter.yaml
+
+| Name | Module | Has Conditions |
+| ---- | ------ | -------------- |
+| Install podman | ansible.builtin.apt | False |
+| Create mongodb_exporter container | containers.podman.podman_container | False |
+
 #### File: tasks/main.yaml
 
 | Name | Module | Has Conditions |
 | ---- | ------ | -------------- |
 | Deploy MongoDB | ansible.builtin.import_tasks | False |
+| Deploy MongoDB Exporter | ansible.builtin.import_tasks | False |
 
 #### File: tasks/mongodb.yaml
 

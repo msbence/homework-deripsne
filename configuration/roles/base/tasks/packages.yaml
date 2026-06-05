@@ -10,6 +10,7 @@
       - htop
       - net-tools
       - dnsutils
+      - unzip
 
 - name: Run apt autoclean to cleanup
   ansible.builtin.apt:
