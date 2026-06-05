@@ -37,25 +37,25 @@ resource "aws_iam_instance_profile" "grafana" {
 
 # BACKUP BUCKET
 
-data "aws_iam_policy_document" "backup_bucket_put" {
+data "aws_iam_policy_document" "backup_bucket" {
   statement {
     sid       = "BackupBucketAccess"
     effect    = "Allow"
-    actions   = ["s3:PutObject"]
+    actions   = ["s3:PutObject", "s3:GetObject"]
     resources = ["${aws_s3_bucket.backups_grafana.arn}/*"]
   }
 }
 
-resource "aws_iam_policy" "backup_bucket_put" {
-  name   = "grafana-backup-bucket-put-policy"
-  policy = data.aws_iam_policy_document.backup_bucket_put.json
+resource "aws_iam_policy" "backup_bucket" {
+  name   = "grafana-backup-bucket-policy"
+  policy = data.aws_iam_policy_document.backup_bucket.json
 
   tags = var.default_tags
 }
 
-resource "aws_iam_role_policy_attachment" "backup_bucket_put" {
+resource "aws_iam_role_policy_attachment" "backup_bucket" {
   role       = aws_iam_role.grafana.name
-  policy_arn = aws_iam_policy.backup_bucket_put.arn
+  policy_arn = aws_iam_policy.backup_bucket.arn
 }
 
 # SCHEDULER

@@ -4,7 +4,7 @@ TBW
 
 ## Architecture overview
 
-TBW
+![architecture](/.assets/architecture.png)
 
 ## Networking
 
