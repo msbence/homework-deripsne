@@ -1,6 +1,22 @@
-# Provisioing
+# Provisioning
 
-TBW
+This folder contains Terraform code, responsible for providing all the resources that the configuration step depends on. It includes spinning up the EC2 instance, creating and configuring the S3 buckets, etc...
+
+If something is achievable with an AWS service, it also provisions that. An example would be the EventBridge schedule that turns off and on the EC2 instance.
+
+It uses a pre-existing S3 bucket to store the state, which should have versioning enabled. It also implements state locking.
+
+## Usage
+
+1. `aws login`
+2. _provision state bucket if does not exist_
+3. `terraform init`
+4. `terraform plan`
+5. _verify_
+6. `terraform apply`
+
+> [!IMPORTANT]
+> To have a valid HTTPS certificate, I had to use a DNS record from my own homelab. This was also provisioned by this code, therefore a DigitalOcean token is required to apply all this. It should be relatively easy to replace that with a Route53 record.
 
 ---
 
