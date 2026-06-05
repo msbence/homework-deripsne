@@ -11,6 +11,7 @@
       - net-tools
       - dnsutils
       - unzip
+      - s3cmd
 
 - name: Run apt autoclean to cleanup
   ansible.builtin.apt:
