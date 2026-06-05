@@ -18,6 +18,8 @@ It uses a pre-existing S3 bucket to store the state, which should have versionin
 > [!IMPORTANT]
 > To have a valid HTTPS certificate, I had to use a DNS record from my own homelab. This was also provisioned by this code, therefore a DigitalOcean token is required to apply all this. It should be relatively easy to replace that with a Route53 record.
 
+![terraform](/.assets/terraform.png)
+
 ---
 
 <!-- BEGIN_TF_DOCS -->

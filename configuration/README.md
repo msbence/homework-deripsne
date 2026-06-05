@@ -12,3 +12,5 @@ It looks up SSM Parameters and also leverages the AWS EC2 dynamic inventory plug
 4. `ansible-galaxy install -r requirements.yaml`
 5. `aws login`
 6. `ansible-playbook main.yaml`
+
+![ansible](/.assets/ansible.png)

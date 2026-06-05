@@ -6,6 +6,8 @@
 My task was to deploy a small, production-like Grafana environment on AWS, with a focus on availability and redundancy.  
 I had to follow specific requirements, which resulted in some strange solutions. As I was provided with an AWS account paid by the company, I tried to be ultra cost-aware (no LB, no multi-AZ, ...). This took a great toll on the HA-setup, but I will be mentioning all the trade-offs I made due to this contraint.
 
+![grafana](/.assets/grafana.png)
+
 ## Features in a nutshell
 
 - EC2 instance with on/off schedule and extra ZFS storage (mirrored)

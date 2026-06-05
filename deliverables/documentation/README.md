@@ -99,3 +99,4 @@ The repo contains no secrets at all. It reads everything from the Parameter Stor
 8. Most importantly: to cover availability and redundancy, I would move the whole Grafana container to Fargate (or ECS-EC2), and get rid of this single-AZ instance.
 9. Several applications were deployed as containers. By setting up Renovatebot we would have the means to get notified (and depending on the configuration also auto-open MRs) in case a new version is released from a tool we run.
 10. I wrote everything Terraform from scratch to show low-level tool usage. Normally I would suggest to use [terraform-aws-modules](https://github.com/terraform-aws-modules) as they are more robust, and can save time.
+11. Use variables on the Grafana overview dashboard to make it dynamic
